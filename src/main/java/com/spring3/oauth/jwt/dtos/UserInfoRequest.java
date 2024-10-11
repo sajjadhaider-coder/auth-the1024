@@ -15,17 +15,13 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class UserRequest {
-
-    @NotNull
-    @Size(min = 3, max = 50)
-    private String username;
-
-    private Long id;
+public class UserInfoRequest {
 
     @NotNull
     @Size(min = 3, max = 50)
     private String nickname;
+
+    private Long id;
 
     @NotNull
     @Size(min = 8, message = "Password must be at least 8 characters long")

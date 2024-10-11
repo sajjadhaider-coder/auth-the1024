@@ -1,7 +1,7 @@
 package com.spring3.oauth.jwt.services;
 
-import com.spring3.oauth.jwt.dtos.UserRequest;
-import com.spring3.oauth.jwt.dtos.UserResponse;
+import com.spring3.oauth.jwt.dtos.UserInfoRequest;
+import com.spring3.oauth.jwt.dtos.UserInfoResponse;
 import com.spring3.oauth.jwt.models.UserInfo;
 import com.spring3.oauth.jwt.repositories.UserRepository;
 import org.modelmapper.ModelMapper;
@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.lang.reflect.Type;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @Service
 public class UserServiceImpl implements com.spring3.oauth.jwt.services.UserService {
@@ -27,10 +28,10 @@ public class UserServiceImpl implements com.spring3.oauth.jwt.services.UserServi
 
 
     @Override
-    public UserResponse saveUser(UserRequest userRequest) {
-        if(userRequest.getUsername() == null){
-            throw new RuntimeException("Parameter username is not found in request..!!");
-        } else if(userRequest.getPassword() == null){
+    public UserInfoResponse saveUser(UserInfoRequest userInfoRequest) {
+        if(userInfoRequest.getAccountNumber()== null){
+            throw new RuntimeException("Parameter account number is not found in request..!!");
+        } else if(userInfoRequest.getPassword() == null){
             throw new RuntimeException("Parameter password is not found in request..!!");
         }
 
@@ -44,50 +45,63 @@ public class UserServiceImpl implements com.spring3.oauth.jwt.services.UserServi
         UserInfo savedUser = null;
 
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-        String rawPassword = userRequest.getPassword();
+        String rawPassword = userInfoRequest.getPassword();
         String encodedPassword = encoder.encode(rawPassword);
 
-        UserInfo user = modelMapper.map(userRequest, UserInfo.class);
+        UserInfo user = modelMapper.map(userInfoRequest, UserInfo.class);
+        user.setUsername(userInfoRequest.getAccountNumber());
         user.setPassword(encodedPassword);
-        if(userRequest.getId() != null && userRequest.getId() > 0){
-            UserInfo oldUser = userRepository.findFirstById(userRequest.getId());
+        if(userInfoRequest.getId() != null && userInfoRequest.getId() > 0){
+            UserInfo oldUser = userRepository.findFirstById(userInfoRequest.getId());
             if(oldUser != null){
                 oldUser.setId(user.getId());
                 oldUser.setPassword(user.getPassword());
+                oldUser.setNickname(user.getNickname());
                 oldUser.setUsername(user.getUsername());
+                oldUser.setVerificationCode(user.getVerificationCode());
                 oldUser.setRoles(user.getRoles());
 
                 savedUser = userRepository.save(oldUser);
                 userRepository.refresh(savedUser);
             } else {
-                throw new RuntimeException("Can't find record with identifier: " + userRequest.getId());
+                throw new RuntimeException("Can't find record with identifier: " + userInfoRequest.getId());
             }
         } else {
 //            user.setCreatedBy(currentUser);
             savedUser = userRepository.save(user);
         }
         userRepository.refresh(savedUser);
-        UserResponse userResponse = modelMapper.map(savedUser, UserResponse.class);
+        UserInfoResponse userResponse = modelMapper.map(savedUser, UserInfoResponse.class);
+
+        if (savedUser.getUsername() != null )
+            userResponse.setAccountNumber(user.getUsername());
+
         return userResponse;
     }
 
     @Override
-    public UserResponse getUser() {
+    public UserInfoResponse getUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         UserDetails userDetail = (UserDetails) authentication.getPrincipal();
         String usernameFromAccessToken = userDetail.getUsername();
         UserInfo user = userRepository.findByUsername(usernameFromAccessToken);
-        UserResponse userResponse = modelMapper.map(user, UserResponse.class);
+        UserInfoResponse userResponse = modelMapper.map(user, UserInfoResponse.class);
+
+        if (user.getUsername() != null )
+            userResponse.setAccountNumber(user.getUsername());
+
         return userResponse;
     }
 
     @Override
-    public List<UserResponse> getAllUser() {
+    public List<UserInfoResponse> getAllUser() {
         List<UserInfo> users = (List<UserInfo>) userRepository.findAll();
-        Type setOfDTOsType = new TypeToken<List<UserResponse>>(){}.getType();
-        List<UserResponse> userResponses = modelMapper.map(users, setOfDTOsType);
+        Type setOfDTOsType = new TypeToken<List<UserInfoResponse>>(){}.getType();
+        List<UserInfoResponse> userResponses = modelMapper.map(users, setOfDTOsType);
+        for (int i = 0; i < users.size(); i++) {
+            userResponses.get(i).setAccountNumber(users.get(i).getUsername());
+        }
+
         return userResponses;
     }
-
-
 }

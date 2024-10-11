@@ -2,6 +2,8 @@ package com.spring3.oauth.jwt.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -9,7 +11,6 @@ import lombok.ToString;
 
 import java.util.HashSet;
 import java.util.Set;
-
 
 @Entity
 @Data
@@ -24,27 +25,31 @@ public class UserInfo {
     @Column(name = "ID")
     private long id;
 
+    @NotNull
+    @Size(min = 3, max = 50)
+    @Column(name = "NICKNAME", nullable = false)
+    private String nickname;
+
+    @NotNull
+    @Column(name = "ACCOUNT_NUMBER", unique = true, nullable = false, length = 20)
+    @JsonIgnore // Hide sensitive data if necessary
     private String username;
 
-    @JsonIgnore
+    @NotNull
+    @Column(name = "VERIFICATION_CODE", length = 10)
+    private String verificationCode;
+
+    @NotNull
+    @JsonIgnore // Prevent password from being serialized
+    @Column(name = "PASSWORD", nullable = false)
     private String password;
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+    @JoinTable(
+            name = "USER_ROLES",
+            joinColumns = @JoinColumn(name = "USER_ID"),
+            inverseJoinColumns = @JoinColumn(name = "ROLE_ID")
+    )
     private Set<UserRole> roles = new HashSet<>();
 
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-   public void setRoles(Set<UserRole> roles) {
-        this.roles = roles;
-    }
 }

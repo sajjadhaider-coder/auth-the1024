@@ -12,15 +12,13 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class UserResponse {
+public class UserInfoResponse {
 
     private Long id;
 
-    private String username;
+    private String accountNumber;
 
     private String nickname;
-
-    private String accountNumber;
 
     private String verificationCode;
 

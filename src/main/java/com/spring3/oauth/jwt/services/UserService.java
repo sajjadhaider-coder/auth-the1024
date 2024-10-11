@@ -1,18 +1,19 @@
 package com.spring3.oauth.jwt.services;
 
-import com.spring3.oauth.jwt.dtos.UserRequest;
-import com.spring3.oauth.jwt.dtos.UserResponse;
+import com.spring3.oauth.jwt.dtos.UserInfoRequest;
+import com.spring3.oauth.jwt.dtos.UserInfoResponse;
+
 
 import java.util.List;
 
 
 public interface UserService {
 
-    UserResponse saveUser(UserRequest userRequest);
+    UserInfoResponse saveUser(UserInfoRequest userInfoRequest);
 
-    UserResponse getUser();
+    UserInfoResponse getUser();
 
-    List<UserResponse> getAllUser();
+    List<UserInfoResponse> getAllUser();
 
 
 }
