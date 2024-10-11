@@ -15,8 +15,14 @@ import java.util.Set;
 public class UserResponse {
 
     private Long id;
+
     private String username;
+
+    private String nickname;
+
+    private String accountNumber;
+
+    private String verificationCode;
+
     private Set<UserRole> roles;
-
-
 }
