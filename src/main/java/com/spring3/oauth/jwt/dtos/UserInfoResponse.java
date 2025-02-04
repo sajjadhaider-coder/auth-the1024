@@ -1,11 +1,11 @@
 package com.spring3.oauth.jwt.dtos;
 
-import com.spring3.oauth.jwt.models.UserRole;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
+import java.time.LocalDateTime;
 import java.util.Set;
 
 @Data
@@ -15,12 +15,15 @@ import java.util.Set;
 public class UserInfoResponse {
 
     private Long id;
-
-    private String accountNumber;
-
-    private String nickname;
-
+    private String username;
     private String verificationCode;
+    private String deviceType;
+    private String status;
+    private String ipAddress;
+    private String userLocation;
+    private LocalDateTime createdAt;
+    private int createdBy;
+    private LocalDateTime UpdatedAt;
+    private int UpdatedBy;
 
-    private Set<UserRole> roles;
 }

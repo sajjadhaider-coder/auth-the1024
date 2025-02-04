@@ -24,7 +24,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         logger.debug("Entering in loadUserByUsername Method...");
         UserInfo user = userRepository.findByUsername(username);
         if(user == null){
-            logger.error("AccountNumber not found: " + username);
+            logger.error("Username not found: " + username);
             throw new UsernameNotFoundException("could not found user..!!");
         }
         logger.info("User Authenticated Successfully..!!!");

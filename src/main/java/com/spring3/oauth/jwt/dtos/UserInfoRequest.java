@@ -1,6 +1,6 @@
 package com.spring3.oauth.jwt.dtos;
 
-import com.spring3.oauth.jwt.models.UserRole;
+import jakarta.persistence.Column;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -9,6 +9,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
+import java.time.LocalDateTime;
 import java.util.Set;
 
 @Data
@@ -16,10 +17,6 @@ import java.util.Set;
 @NoArgsConstructor
 @ToString
 public class UserInfoRequest {
-
-    @NotNull
-    @Size(min = 3, max = 50)
-    private String nickname;
 
     private Long id;
 
@@ -33,17 +30,20 @@ public class UserInfoRequest {
 
     @NotNull
     @Size(min = 10, max = 20, message = "Account number must be between 10 and 20 characters")
-    private String accountNumber;
+    private String username;
 
     @NotNull
     @Size(min = 6, max = 10, message = "Verification code must be between 6 and 10 characters")
     private String verificationCode;
 
-    @NotNull
-    private Set<@Valid UserRole> roles;
-
-     public Long getId() {
-        return id;
-    }
+    private String deviceType;
+    private String status;
+    private String ipAddress;
+    private String userLocation;
+    private LocalDateTime createdAt;
+    private int createdBy;
+    private int userId;
+    private LocalDateTime UpdatedAt;
+    private int UpdatedBy;
 
 }

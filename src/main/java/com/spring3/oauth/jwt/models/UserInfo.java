@@ -9,6 +9,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -26,12 +27,7 @@ public class UserInfo {
     private long id;
 
     @NotNull
-    @Size(min = 3, max = 50)
-    @Column(name = "NICKNAME", nullable = false)
-    private String nickname;
-
-    @NotNull
-    @Column(name = "ACCOUNT_NUMBER", unique = true, nullable = false, length = 20)
+    @Column(name = "USER_NAME", unique = true, nullable = false, length = 20)
     @JsonIgnore // Hide sensitive data if necessary
     private String username;
 
@@ -39,17 +35,35 @@ public class UserInfo {
     @Column(name = "VERIFICATION_CODE", length = 10)
     private String verificationCode;
 
-    @NotNull
     @JsonIgnore // Prevent password from being serialized
     @Column(name = "PASSWORD", nullable = false)
     private String password;
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
-    @JoinTable(
-            name = "USER_ROLES",
-            joinColumns = @JoinColumn(name = "USER_ID"),
-            inverseJoinColumns = @JoinColumn(name = "ROLE_ID")
-    )
-    private Set<UserRole> roles = new HashSet<>();
+    @Column(name = "DEVICE_TYPE")
+    private String deviceType;
+
+    @Column(name = "STATUS")
+    private String status;
+
+    @Column(name = "IP_ADDRESS")
+    private String ipAddress;
+
+    @Column(name = "LOCATION")
+    private String userLocation;
+
+    @Column(name = "CREATED_AT", nullable = false)
+    private LocalDateTime createdAt;
+
+    @Column(name = "CREATED_BY")
+    private int createdBy;
+
+    @Column(name = "USER_ID", nullable = false)
+    private int userId;
+
+    @Column(name = "UPDATED_AT")
+    private LocalDateTime UpdatedAt;
+
+    @Column(name = "UPDATED_BY")
+    private int UpdatedBy;
 
 }

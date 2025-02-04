@@ -44,12 +44,13 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
                 .csrf(csrf -> csrf.disable())
+                .cors(cors -> cors.disable()) // Try disabling CORS (not recommended for production)
                 .authorizeHttpRequests(authz -> authz
                         // Swagger endpoints
                         .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
 
                         // Public endpoints
-                        .requestMatchers("/api/v1/signup", "/api/v1/login", "/api/v1/refreshToken").permitAll()
+                        .requestMatchers("/api/v1/signup", "/result/getResult", "/api/v1/login", "/api/v1/refreshToken").permitAll()
 
                         // Secured endpoints
                         .requestMatchers("/api/v1/**").authenticated()
